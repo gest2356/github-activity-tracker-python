@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 
 def get_activity(username_to_search):
@@ -12,14 +14,19 @@ def get_activity(username_to_search):
          event_type = event['type']
          event_name = event['repo']['name']
          event_created = event['created_at']
-         temp = {event_id, event_type, event_name, event_created}
+         temp = [event_id, event_type, event_name, event_created]
          filtered_events.append(temp)
 
       for event in filtered_events:
          created_at = event[3]
+         created_at_dto = datetime.datetime.fromisoformat(created_at)
+         created_at_formated = created_at_dto.strftime('%Y-%m-%d')
 
-         created_at_formated = created_at.strftime('%Y-%m-%d')
-         print(f"{event[1]} --- {event[4]} --- {created_at_formated}")
+         if event[1] == 'CreateEvent':
+            print(f"{username_to_search} created repo {event[2]} on {created_at_formated}")
+         elif event[1] == 'PushEvent':
+            print(f"{username_to_search} pushed to repo {event[2]} on {created_at_formated}")
+      #   print(f"{event[1]} --- {event[2]} --- {created_at_formated}")
 
 
    else:
